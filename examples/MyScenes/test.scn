@@ -1,0 +1,62 @@
+<Node name="root" dt="0.03" gravity="0 -9.8 0">
+    <!-- Plugins necessários -->
+    <RequiredPlugin name="Sofa.Component.IO.Mesh"/>
+    <RequiredPlugin name="Sofa.Component.StateContainer"/>
+    <RequiredPlugin name="Sofa.Component.ODESolver.Backward"/>
+    <RequiredPlugin name="Sofa.Component.LinearSolver.Iterative"/>
+    <RequiredPlugin name="Sofa.Component.Mass"/>
+    <RequiredPlugin name="Sofa.Component.SolidMechanics.FEM.Elastic"/>
+    <RequiredPlugin name="Sofa.Component.Mapping.Linear"/>
+    <RequiredPlugin name="Sofa.Component.Topology.Container.Dynamic"/>
+    <RequiredPlugin name="Sofa.GL.Component.Rendering3D"/>
+    <RequiredPlugin name="Sofa.Component.Engine.Select"/>
+    <RequiredPlugin name="Sofa.Component.Constraint.Projective"/>
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/>
+    <RequiredPlugin name="Sofa.Component.Collision.Geometry"/>
+    <RequiredPlugin name="Sofa.Component.Collision.Response.Contact"/>
+
+    <!-- Sistema de colisão -->
+    <DefaultAnimationLoop />
+    <CollisionPipeline />
+    <BruteForceBroadPhase />
+    <BVHNarrowPhase />
+    <MinProximityIntersection alarmDistance="0.5" contactDistance="0.2" />
+    <DefaultContactManager response="FrictionContact" />
+
+    <Node name="LiverVolume">
+        <EulerImplicitSolver />
+        <CGLinearSolver />
+
+        <!-- Volume físico vindo do .msh -->
+        <MeshGmshLoader name="volumeLoader" filename="mesh/liver3.msh" />
+        <MechanicalObject name="Volume" src="@volumeLoader" />
+
+        <TetrahedronSetTopologyContainer name="tetraTopo" src="@volumeLoader" />
+        <TetrahedronSetGeometryAlgorithms />
+        <TetrahedronSetTopologyModifier />
+
+        <DiagonalMass massDensity="4.0" />
+        <TetrahedronFEMForceField name="fem" youngModulus="5000" poissonRatio="0.3" method="large" />
+        
+        <BoxROI name="FixedROI" box="-1 6 -0.5   1 7 1.5" position="@Volume.rest_position"/>
+        <FixedProjectiveConstraint indices="@FixedROI.indices" />
+
+        <!-- VISUAL -->
+        <Node name="VisualModel">
+            <MeshOBJLoader name="objLoader" filename="mesh/liver3.obj" scale3d="5 5 5" rotation="150 0 0" translation="3.2 7 0" />
+            <OglModel name="Visual" src="@objLoader" color="red"/>
+            <BarycentricMapping input="@../Volume" output="@Visual" />
+        </Node>
+
+        <!-- COLISÃO -->
+        <Node name="CollisionModel">
+            <MeshOBJLoader name="colLoader" filename="mesh/liver3.obj" scale3d="5 5 5" rotation="150 0 0" translation="3.2 7 0" />
+            <MechanicalObject name="ColMO" src="@colLoader"/>
+            <TriangleSetTopologyContainer src="@colLoader"/>
+            <TriangleSetGeometryAlgorithms/>
+            <TriangleSetTopologyModifier/>
+            <TriangleCollisionModel />
+            <BarycentricMapping input="@../Volume" output="@ColMO"/>
+        </Node>
+    </Node>
+</Node>

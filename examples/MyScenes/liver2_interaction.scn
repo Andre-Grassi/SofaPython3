@@ -27,6 +27,22 @@
     <CollisionResponse response="PenalityContactForceField" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
 
+    <Node name="Interactor" gravity="0 0 0">
+        <!-- Representa o dedo como um ponto mecânico -->
+        <MechanicalObject name="FingerMO" position="0 10 0"/>
+        
+        <!-- Esfera de colisão que age como o volume de toque -->
+        <SphereCollisionModel radius="1.5" />
+
+        <!-- Para visualizar a esfera -->
+        <OglModel color="1 1 0 1" />
+        <!-- <IdentityMapping input="@." output="@./OglModel" /> -->
+
+        <!-- Para mover o dedo usando as teclas (ou substitua por mouse/script) -->
+        <LinearMovementConstraint template="Vec3d" indices="0" keyUp="UP" keyDown="DOWN" keyLeft="LEFT" keyRight="RIGHT" keyForward="A" keyBackward="Z" />
+    </Node>
+
+
     <Node name="LiverVolume">
         <EulerImplicitSolver name="cg_odesolver" printLog="false"  rayleighStiffness="0.01" rayleighMass="1.0" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -53,12 +69,12 @@
 			
             <Tetra2TriangleTopologicalMapping input="@../TetraContainer" output="@TriContainer" />
 			<TriangleCollisionModel color="1010"/>
-
             
+            <!-- <InteractionForceField object1="@../Interactor" object2="@.." /> -->
+
             <Node name="LiverVisu">
                 <OglModel name="Visual" color="red" />
                 <IdentityMapping input="@../../Volume" output="@Visual" />
-                <MechanicalObject />
             </Node>
         </Node>        
     </Node>
