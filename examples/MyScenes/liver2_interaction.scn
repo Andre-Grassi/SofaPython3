@@ -30,12 +30,14 @@
     <Node name="Interactor" gravity="0 0 0">
         <!-- Representa o dedo como um ponto mecânico -->
         <MechanicalObject name="FingerMO" position="0 10 0"/>
+
+        <MeshOBJLoader name="loader" filename="mesh/ball.obj"/>
         
         <!-- Esfera de colisão que age como o volume de toque -->
-        <SphereCollisionModel radius="1.5" />
+        <!-- <SphereCollisionModel radius="1.5" /> -->
 
         <!-- Para visualizar a esfera -->
-        <OglModel color="1 1 0 1" />
+        <OglModel color="1 1 0 1" scale3d="30 30 30" src="@loader" />
         <!-- <IdentityMapping input="@." output="@./OglModel" /> -->
 
         <!-- Para mover o dedo usando as teclas (ou substitua por mouse/script) -->
@@ -69,6 +71,8 @@
 			
             <Tetra2TriangleTopologicalMapping input="@../TetraContainer" output="@TriContainer" />
 			<TriangleCollisionModel color="1010"/>
+
+            <MechanicalObject />
             
             <!-- <InteractionForceField object1="@../Interactor" object2="@.." /> -->
 
