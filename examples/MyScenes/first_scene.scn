@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<Node name="root" dt="0.03" showBoundingTree="0" gravity="0 -9.8 0">
+    <RequiredPlugin name="Sofa.Component.Collision.Detection.Algorithm"/> 
+    
+    <CollisionPipeline />
+    <GenericConstraintSolver tolerance="1e-6" maxIterations="1000"/>
+    <BruteForceBroadPhase />
+    <BVHNarrowPhase />
+    <RuleBasedContactManager responseParams="mu=0.0" name="Response" response="FrictionContactConstraint"/>
+    <LocalMinDistance alarmDistance="10" contactDistance="5" angleCone="0.01" />
+
+    <VisualGrid nbSubdiv="10" size="1000"/>
+
+    <Node name="Config">
+        <OglSceneFrame style="Arrows" alignment="TopRight" />
+    </Node>
+
+    <Node name="sphere">
+        <EulerImplicitSolver name="odesolver"  />
+        <CGLinearSolver name="linearSolver" iterations="25" tolerance="1e-05" threshold="1e-05"/>
+        <MechanicalObject name="sphere" template="Rigid3" showObjectScale="50" />
+
+        <!-- Carrega alguma mesh, mas não faz ser visível -->
+        <MeshOBJLoader name="loader" filename="mesh/ball.obj" scale="45" triangulate="true"/>
+
+        <!-- Torna a mesh carregada pelo loader visível em algum ponto -->
+        <OglModel src="@loader" scale3d="30 30 30"/>
+
+
+        <TriangleCollisionModel input="@sphere"/>
+    </Node>
+</Node>
